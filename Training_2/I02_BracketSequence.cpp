@@ -1,121 +1,112 @@
 #include <iostream>
 #include <string>
 #include <stack>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-bool bracket_check(char top, char chr){
-    if (( top == '(' && chr == ')' ) || ( top == '[' && chr == ']' )){
+bool br_check(char x, char y){  //Check current char and stack's top
+    if ( (x == '(' && y == ')' ) || (x == '[' && y == ']') )
         return true;
-    }
     else return false;
 }
 
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     
-    string origin;    cin >> origin; //Take original string;
+    string str, result; 
+    cin >> str; str = "0" + str;//Initial bracket sequence
 
-    int close = 0, closeS = 0, //close and square close brackets
-        last = 0; //last position of a correct close bracket
+    int maxS = 0,  //Max square bracket
+        square = 0, //Current square brackets
+        last = 0,   //Index of last correct close bracket
+        close = 0;  //Number of correct close bracket
 
-    stack <char> check;
-    vector <string> result_sub;
-    vector <int> result_closeS;
+    stack <char> s; //Check stack
 
-    for (int i = 0; i < origin.length(); ++i){
-        char chr = origin[i];
+    //A correct close bracket is the end of a correct substring
+    //Put str into stack to check correctness normally
+    //Stop to calculate square bracket that substring have
+    //when meet a wrong close bracket
+    for (int i = 1; i < str.length(); ++i){
+        
+        char chr = str[i];  //Store current bracket
 
-        if (chr == '(' || chr == '['){   //Push all opening brackets;
-            check.push(chr);
+        if (chr == '(' || chr == '['){  //Push all open brackets
+            s.push(chr);
         }
         else {
-            if (check.empty() || bracket_check(check.top(), chr) == false){
-                if (close == 0) continue;
+            if (s.empty() || br_check(s.top(), chr) == false){   //Meet wrong close bracket
+                int first = last + 1 - close * 2;   //First index of correct substring
 
-                //Take correct substring
-                int first = last - 2 * close + 1; //position of substring's first letter
-                string sub;
+                string sub = str.substr(first, last - first + 1);   //Correct substring
 
-                for( ; first <= last; ++first){ //Take substring from first -> last
-                    sub.push_back(origin[first]);
+                //Compare result
+                if (square >= maxS){
+                    result = sub;
+                    maxS = square;
                 }
-                result_sub.push_back(sub);
-                result_closeS.push_back(closeS);
 
-                //Reset close, last counter and check stack
-                close = 0; last = 0; closeS = 0;
-
-                while (check.empty() == false){
-                    check.pop();
-                }
+                //Reset counters and stack
+                close = 0;
+                square = 0;
+                last = 0;
+                while (s.empty() == false) s.pop();
             }
-            else{
-                ++close;
+            else {  //Correct close bracket -> Update counters
+                s.pop();
+
                 last = i;
-                check.pop();
-
-                if (chr == ']') ++closeS;
+                ++close;
+                if (chr == ']') ++square;
             }
+
         }
     }
-
+    //If close != 0 --> Exist some wrong open brackets
+    //Reverse above process with close bracket
+    //If met wrong open bracket, break substring and calc result
     if (close != 0){
-        string sub = "";
-        closeS = 0;
+        while (s.empty() == false) s.pop(); //Reset stack
 
-        stack <char> s;
+        square = 0; //Reset square counter
+        string sub; //Store substring
 
-        while (close != 0){
-            char chr = origin[last];
+        for (int i = last; close != -1; --i){  //Start from last and check backward
+  
+            char chr = str[i];  
 
-            if (chr == ']' || chr == ')'){
+            if ( chr == ']' || chr == ')' ){    //Push all close brackets
                 s.push(chr);
                 sub.push_back(chr);
-
-                if(chr == ']') closeS++;
+                if (chr == ']') ++square;
             }
-            else {
-                if(s.empty()){
-                    reverse(sub.begin(), sub.end());
-                    result_sub.push_back(sub);
-                    result_closeS.push_back(closeS);
-                    closeS = 0;
-                    sub = "";
-                }
-                else {
-                    sub.push_back(chr);
-                    s.pop();
-                    --close;
-                }
-            }
+            else if (s.empty()){
+                reverse(sub.begin(), sub.end());  //Correct substring
 
-            --last;
+                if (square >= maxS){    //Compare result
+                    result = sub;
+                    maxS = square;
+                }
+
+                //Reset counters and stack;
+                square = 0;
+                sub = "";
+                while (s.empty() == false) s.pop();
+
+                if (close == 0) --close;    //End loop
+            }
+            else{   //Correct close bracket -> Update counters
+                s.pop();
+                sub.push_back(chr);
+
+                --close;
+            }
         }
-
-        reverse(sub.begin(), sub.end());
-        result_sub.push_back(sub);
-        result_closeS.push_back(closeS);
-    }
-
-    if (result_sub.empty()) {
-        result_sub.push_back("");
-        result_closeS.push_back(0);
     }
     
-    int max = -1, index = 0;
-
-    for (int i = 0; i < result_sub.size(); ++i){  //Print optimal substrings
-        if (result_closeS[i] >= max){
-            max = result_closeS[i];
-            index = i;
-        }
-    }
-
     //Output
-    cout << max << endl << result_sub[index] << endl;
+    cout << maxS << endl << result << endl;
 
     return 0;
 }
