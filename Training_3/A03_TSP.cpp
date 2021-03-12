@@ -1,62 +1,70 @@
 #include <iostream>
+#include <vector>
 #include <limits>
+#include <cstring>
 
 using namespace std;
 
-int city = 0, num = 0;
+/*TSP solution using backtracking
+    Input included:
+        cost[N][N] -> cost matrix from a city to another
+        mark -> Check for if a city is visited or not
+        pos -> current position of this step (before)
+        city -> total number of cities
+        count -> number of cities visited
+        cmin -> minimum cost from a city to another
+        curr -> current total cost of this route
+        res -> lowest total cost of all routes
+*/
 
-int cost[22][22];
-int min_cost = INT_MAX;
-long long curr = 0, best = LLONG_MAX;
-bool mark[22];
-int route[22];
+void tsp(int cost[21][21], vector <bool>& mark, int pos, int city, int count, int cmin, long long curr, long long& res){
+    if (curr + cmin * (city - count) >= res) return;    // Branch and Bound step
 
-void tsp(int k){
-    if (k > city){
-        curr += cost[route[k-1]][1];
-
-        best = min(best, curr);
+    if (count == city && cost[pos][1]){     //If this is last city, finish route and compare result
         
-        curr -= cost[route[k-1]][1];
-
+        res = min(res, curr + cost[pos][1]);
         return;
     }
 
-    for (int i = 2; i <= city; ++i){
-        if (curr + min_cost * (city - k + 1) < best && mark[i] == false && cost[route[k-1]][i] > 0){
-            route[k] = i; 
-            mark[i] = true;
-            curr += cost[route[k-1]][i];
+    for (int i = 1; i <= city; ++i){    //browse all cities and find available cities to continue recursion
+        if (mark[i] == false && cost[pos][i]){
+            mark[i] = true; //update mark
 
-            tsp(k+1);
+            tsp(cost, mark, i, city, count + 1, cmin, curr + cost[pos][i], res);    //update pos, count, curr
 
-            curr -= cost[route[k-1]][i];
+            //backtracking step
             mark[i] = false;
-            route[k] = 0;
         }
     }
-    
 }
 
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
-    
+    //Input
+    int city, num, cmin = INT_MAX;
+    long long result = LLONG_MAX;
+
     cin >> city >> num;
 
-    for (int k = 0; k < num; ++k){
+    int cost[21][21];
+    memset (cost, 0, sizeof(cost));
+
+    for(int k = 0; k < num; ++k){
         int i, j;
         cin >> i >> j;
         cin >> cost[i][j];
 
-        min_cost = min(min_cost, cost[i][j]);
+        cmin = min(cmin, cost[i][j]);   //Take minimum cost from a city to another
     }
 
-    for (bool b : mark) b = false;
+    vector <bool> mark(21);
+    for (bool b : mark) b = false; //No city marked before tsp run
 
-    route[1] = 1;
-    tsp(2);
+    mark[1] = true; //Mark first city
 
-    cout << best;
+    tsp(cost, mark, 1, city, 1, cmin,  0, result);
+
+    cout << result;
 
     return 0;
 }
