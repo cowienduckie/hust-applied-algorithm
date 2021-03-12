@@ -57,7 +57,7 @@ int main(int argc, char **argv){
         move.erase(make_pair(0, 0));
         //
        for (pair <int, int> m: move){
-           cout << m.first << " " << m.second << " : " << max_obj(m) <<endl;
+//           cout << m.first << " " << m.second << " : " << max_obj(m) <<endl;
 
            if (largest == arrive.size() || largest >= max_obj(m)){
                break;
