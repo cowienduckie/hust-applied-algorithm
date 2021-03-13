@@ -4,25 +4,20 @@
 
 using namespace std;
 
-long long num_obj = 0, max_w = 0, result = 0;
+int num_obj = 0, max_w = 0, result = 0;
 
-void knapsac(vector<pair<int, int>> object,int last, long long value, long long weight){ 
+void knapsac(vector<pair<int, int>> object,int last, int value, int weight){ 
 
-    if (last == (num_obj - 1)){
-        result = max(value, result);
-        return;
-    }
-    
     for (int i = last + 1; i < num_obj; ++i){
         if (weight + object[i].first <= max_w){
             knapsac(object, i,value + object[i].second, weight + object[i].first);
         }
         else{
-            result = max(value, result);
             break;
-        }
-        
+        }        
     }
+    
+    result = max(value, result);
 }
 
 int main(int argc, char **argv){
@@ -36,7 +31,7 @@ int main(int argc, char **argv){
         cin >> object[i].first >> object[i].second;
     }
     
-    auto compare = [](pair <int, int> a, pair <int, int> b){
+    auto compare = [](pair <int, int> &a, pair <int, int> &b){
         return a.first < b.first;
     };
 
