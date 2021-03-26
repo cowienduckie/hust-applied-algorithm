@@ -7,7 +7,7 @@ int num = 0;
 void printRes(int binary){
     for (int i = num - 1; i >= 0; --i){
         
-        cout << (int)(binary >> i & 1);
+        cout << (int) (binary >> i & 1);
     }
     cout << endl;
 }
