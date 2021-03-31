@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 
         double left = 0.0, right = pi * 10000 * 10000;
 
-        for (int it = 0; it < 200; ++it){
+        for (int it = 0; it < 54; ++it){
 
             int num = 0;
 
