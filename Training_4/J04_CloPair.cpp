@@ -18,14 +18,21 @@ typedef struct point{
 
 }point;
 
-bool compareX (point p1, point p2){
+vector <point> points;
 
-    return p1.x > p2.x;
+bool compareX (point p1, point p2){
+    return p1.x < p2.x;
+
 }
 
 bool compareY (point p1, point p2){
 
-    return p1.y > p2.y;
+    return p1.y < p2.y;
+}
+
+bool operator == (point a, point b){
+
+    return a.x == b.x && a.y == b.y;
 }
 
 double euclid(pair <point, point> p){
@@ -33,12 +40,12 @@ double euclid(pair <point, point> p){
     return sqrt(pow((double)(p.first.x - p.second.x), 2) + pow((double)(p.first.y - p.second.y), 2));
 }
 
-pair <point, point> brute_force(vector<point> points, int left, int right){
+pair <point, point> brute_force(int left, int right){
 
     double min = DBL_MAX; 
     pair <point, point> p = make_pair(point(0, 0), point(0, 0));
 
-    for (int i = left; i <= right; ++i){
+    for (int i = left; i < right; ++i){
 
         for (int j = i + 1; j <= right; ++j){
 
@@ -50,23 +57,23 @@ pair <point, point> brute_force(vector<point> points, int left, int right){
             }
         }
     }
+    
 
     return p;
 }
 
-pair <point, point> clopair(vector <point> points, int left, int right){
-    int mid = (left + right) / 2;
+pair <point, point> clopair(int left, int right){
 
     if (right - left + 1 <= 3){
-        return brute_force(points, left, right);
+        return brute_force(left, right);
     }
 
-    pair <point, point> min_left = clopair(points, left, mid);
-    pair <point, point> min_right = clopair(points, mid + 1, right);
+    int mid = (left + right) / 2; double dist = 0;
 
-    double dist = 0;    
-    
+    pair <point, point> min_left = clopair(left, mid);
+    pair <point, point> min_right = clopair(mid + 1, right);
     pair <point, point> pair_part = make_pair(point(0, 0), point(0, 0));
+
 
     if (euclid(min_left) < euclid(min_right)){
         
@@ -78,9 +85,10 @@ pair <point, point> clopair(vector <point> points, int left, int right){
         dist = euclid(min_right);
     }
 
+    //Initiate strip store points whose distance is mid < dist
     vector <point> strip;
 
-    for (int i = right; i <= left; ++i){
+    for (int i = left; i <= right; ++i){
 
         if (abs(points[i].x - points[mid].x) < dist){
 
@@ -97,13 +105,13 @@ pair <point, point> clopair(vector <point> points, int left, int right){
 
     for (int i = 0; i < strip.size(); ++i){
 
-        for (int j = i + 1; j < strip.size() && abs(points[i].y - points[j].y) < dist; ++i){
+        for (int j = i + 1; j < strip.size() && abs(strip[i].y - strip[j].y) < dist; ++j){
 
-            double temp = euclid(make_pair(points[i], points[j]));
+            double temp = euclid(make_pair(strip[i], strip[j]));
 
             if(temp < min_strip){
-                min_strip = dist;
-                pair_strip = make_pair(points[i], points[j]);
+                min_strip = temp;
+                pair_strip = make_pair(strip[i], strip[j]);
             }
         }
     }
@@ -111,26 +119,12 @@ pair <point, point> clopair(vector <point> points, int left, int right){
     return min_strip < dist ? pair_strip : pair_part;
 }
 
-pair <point, point> solution(vector <point> points, int num){
-
-    sort(points.begin(), points.end(), compareX);
-
-    return clopair(points, 0, num - 1);
-}
-
-bool operator == (point &a, point &b){
-
-    return a.x == b.x && a.y == b.y;
-}
-
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
-    int num = 0;    double min_dist;  pair <point, point> result = make_pair(point(0, 0), point(0, 0));
+    int num = 0;  cin >> num;
 
-    vector <point> points;
-
-    cin >> num;
+    vector <point>  original;
 
     for (int i = 0; i < num; ++i){
         int x = 0, y = 0;
@@ -139,23 +133,30 @@ int main(int argc, char **argv){
         point temp = point(x,y);
 
         points.push_back(temp);
+        original.push_back(temp);
     }
 
+    sort(points.begin(), points.end(), compareX);
+
     //
-    result = solution(points, num);
-    min_dist = euclid(result);
-    
-    int ind1 = 0, ind2 = 0, check = 0;
+    pair <point, point> result = clopair(0, num - 1);
+
+    double min_dist = euclid(result);  int ind1 = 0, ind2 = 0, check = 0;
 
     for (int i = 0; i < num; ++i){
-        if (points[i] == result.first || points[i] == result.second){
+        if (original[i] == result.first || original[i] == result.second){
 
             if (check == 0){
+
                 ind1 = i;
-                check = 1;
+                ++check;
+            }  else  {
+
+                ind2 = i;
+                ++check;
             }
-            else ind2 = i;
         }
+        else if (check == 2) break;
     }
 
     //OUTPUT
