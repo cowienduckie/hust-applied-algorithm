@@ -1,35 +1,31 @@
 #include <iostream>
-     
+
 using namespace std;
-         
-int num = 0;
 
-void printRes(int binary){
-    for (int i = num - 1; i >= 0; --i){
-        
-        cout << (int) (binary >> i & 1);
-    }
-    cout << endl;
-}
+char str[20]; int num;
 
-void binaryList(int pos, int binary){
+void biList(int pos){
+
     if (pos == num){
-        printRes(binary);
 
+        printf("%s\n", str);
         return;
     }
+        
+    str[pos] = '0';
+    biList(pos + 1);
 
-    binary = binary << 1;   binaryList(pos + 1, binary);
+    str[pos] = '1';
+    biList(pos + 1);
 
-    binary = binary + 1;  binaryList(pos + 1, binary);
 }
 
-     
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
+
     cin >> num;
-     
-    binaryList(0, 1);
+    
+    biList(0);
 
     return 0;
 }
