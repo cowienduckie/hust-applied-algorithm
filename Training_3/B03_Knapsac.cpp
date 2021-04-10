@@ -4,43 +4,60 @@
 
 using namespace std;
 
-int num_obj = 0, max_w = 0, result = 0;
+typedef struct Object{
 
-void knapsac(vector<pair<int, int>> object,int last, int value, int weight){ 
-
-    for (int i = last + 1; i < num_obj; ++i){
-        if (weight + object[i].first <= max_w){
-            knapsac(object, i,value + object[i].second, weight + object[i].first);
-        }
-        else{
-            break;
-        }        
-    }
+    int m;  //weight
+    int v;  //value
     
-    result = max(value, result);
-}
+}object;
 
+//Global Variables
+vector <object> obj;   //first = weight, second = values 
+
+int num = 0, M = 0, max_val = 0;  
+
+//List of functions
+void pyb(int pos,int value, int weight);  //Pack your bag
+
+
+//Main
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
-    //Input
-    cin >> num_obj >> max_w;
+    //INPUT
+    cin >> num >> M;  //M = max weight
 
-    vector < pair <int, int> > object(num_obj); 
+    for (int i = 0; i < num; ++i){
 
-    for (int i = 0; i < num_obj; ++i ){
-        cin >> object[i].first >> object[i].second;
+        object tmp;
+        cin >> tmp.m >> tmp.v;  obj.push_back(tmp);
     }
-    
-    auto compare = [](pair <int, int> &a, pair <int, int> &b){
-        return a.first < b.first;
+
+    //
+    auto compare = [](object &a, object &b){
+        return a.m < b.m;
     };
+ 
+    sort(obj.begin(), obj.end(), compare);
 
-    sort(object.begin(), object.end(), compare);
+    pyb(0, 0, 0);
 
-    knapsac(object, -1, 0, 0);
-
-    //Output
-    cout << result;
+    //OUTPUT
+    cout << max_val;
 
     return 0;
+}
+
+//Functions
+void pyb(int pos, int value, int weight){
+
+    for (int i = pos; i < num; ++i){
+
+        if (weight + obj[i].m <= M){
+
+            pyb(i + 1,value + obj[i].v, weight + obj[i].m);
+        }
+        else  break;        
+    }
+    
+    max_val = max(value, max_val);
 }
