@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -12,7 +11,7 @@ using namespace std;
 
 //Main
 int main(int argc, char **argv){
-    //ios_base::sync_with_stdio(false); cin.tie(NULL);
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
     int n = 0, k = 0;  cin >> n >> k;
 
@@ -25,7 +24,7 @@ int main(int argc, char **argv){
     }
 
     //
-    int pos = 0, check = 0;
+    int pos = 0, check = 0;  vector <int> :: iterator it;
 
     while (--k){
 
@@ -35,13 +34,15 @@ int main(int argc, char **argv){
 
             --pos; unvisited.push_back(per[pos]);
 
-            for (vector <int> :: iterator it = unvisited.begin(); it != unvisited.end(); ++it){
+            for (it = unvisited.begin(); it != unvisited.end(); ++it){
 
                 if (per[pos] < *it){
 
-                    per[pos] = *it;
-                    
-                    unvisited.erase(it);
+                    int tmp = *it;
+
+                    *it = per[pos];
+
+                    per[pos] = tmp;
 
                     check = 1;
 
@@ -50,9 +51,9 @@ int main(int argc, char **argv){
             }
         }
 
-        check = pos;  sort(unvisited.begin(), unvisited.end());
+        check = pos; 
 
-        for (vector <int> :: iterator it = unvisited.begin(); it != unvisited.end(); ++it){
+        for (it = unvisited.begin(); it != unvisited.end(); ++it){
 
             ++pos;
 

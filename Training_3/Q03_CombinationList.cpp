@@ -1,89 +1,79 @@
 #include <iostream>
-#include <vector>
-#include <limits>
-
-#define ull unsigned long long
 
 using namespace std;
 
 //Global Variables
 
-vector <int> v;
 
 //List of functions
-void combination(int L, int n, int r);
-int n_choose_m(int max, int n, int m);
+
 
 //Main
 int main(int argc, char **argv){
-    //ios_base::sync_with_stdio(false); cin.tie(NULL);
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
-    int n = 0, m = 0, k = 0;  cin >> n >> m >> k;  v.resize(n + 1);
+    int n = 0, m = 0, k = 0;  cin >> n >> m >> k;
 
+    int comb[m + 1];
 
     //
-    combination(k, n, m);
-    
-    //OUTPUT
+    for (int i = 1; i <= m; ++i){  //Initiate first configuration
 
-    if (k <= n_choose_m(k, n, m)){
+        comb[i] = i;
+    }
 
-        for (int i = 1; i <= n; ++i){
+    /*
+        Denote m-subset of n is m boxes conataining numbers
+        The first subset is [1][2][3]...[m-1][m] also the minimum number in each box
+        Maximum number in each box is the nCm th subset [n-m+1][n-m+2]...[n-m+1][n]
 
-            if (v[i] == 1){
+        Rule:
+            When a box exceed max value, prev box increasing by 1.
+            When a box increases by 1, all next boxes decrease to their new minimums.
+                Example: [a][b][c]...[x][y][z] and x increase by 1. Then [a][b][c]...[x + 1][x + 2][x + 3].
+            Consider from the back, last box is always first box exceed maximum. Then it make its previous and so forth.
+            That domino effect until when a box increase by 1 but not exceed max or every boxes exceeded max.
 
-                printf("%d ", i);
-            }
+        Loop end when we found kth combination or k is greater than nCm 
+    */
+    int pos = 0, max = 0;  //Current position and maximum number of each box
+
+    while (--k){  //Because 1st combination is calculated so k must decrease before loop.
+
+        pos = m, max = n;  //Consider from the last box
+
+        ++comb[pos];  //Update next combination
+
+        while (comb[pos] > max && pos > 0){ //Domino effect
+
+            ++comb[pos - 1];
+
+            --pos;  --max;
         }
 
-    }
-    else  cout << -1;
+        for (int i = pos + 1; i <= m; ++i){  //A box increases and all next boxes decreases
 
-    //cout << endl << n_choose_m(25, 15, 100000000);
+            comb[i] = comb[i - 1] + 1;
+        }
+
+        if (pos == 0) break;  //Last combination mean first box reach its maximum and position point to zero
+    }
+
+    //OUTPUT
+    if (k != 0){  //k greater than nCm
+
+        printf("-1");
+    }
+    else{
+
+        for (int i = 1; i <= m; ++i){
+
+            printf("%d ", comb[i]);
+        }
+    }
+    
 
     return 0;
 }
 
 //Functions
-void combination(int k, int n, int m){
-
-    int comb = 0, tmp = n;
-
-    while (tmp > 0){
-
-        if (tmp > m && m >= 0){
-
-            comb = n_choose_m(k, tmp - 1, m);
-
-            //cout << comb << endl;
-        }
-        else comb = 0;
-
-        if (k < comb){ 
-
-            v[n - tmp + 1] = 1;
-
-            --m;
-            k -= comb;
-        }
-        else v[n - tmp + 1] = 0;
-
-        --tmp;
-    }
-}
-
-int n_choose_m(int max, int n, int k){
-    ull res = 1;
-
-    for (ull d = 1; d <= k; ++d, --n){
-
-        res = res * n / d;
-
-        if (res > max){
-            
-            return INT_MAX;
-        }
-    }
-
-    return res;
-}
