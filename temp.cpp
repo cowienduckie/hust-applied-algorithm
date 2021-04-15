@@ -5,7 +5,11 @@
 using namespace std;
 
 //Global Variables
+int n = 0, k = 0;  
 
+int per[10001];
+
+vector <int> unvisited;
 
 //List of functions
 
@@ -14,20 +18,53 @@ using namespace std;
 int main(int argc, char **argv){
     //ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
-    int n = 0, k = 0;  cin >> n >> k;
+    scanf("%d %d", &n, &k);
 
-    int per[n + 1];
-    vector <int> unvisited;
+
+    //
+    int x = 1; unsigned long long fact = 1; 
 
     for (int i = 1; i <= n; ++i){
 
         per[i] = i;
+
+        if (fact <= k){
+
+            x = i;
+
+            fact = fact * x;
+        }
+    }  
+
+    if (k > fact){
+
+        printf("-1");
+
+        exit(0);
     }
 
-    //
-    int pos = 0, check = 0;
+    fact = fact / x; 
 
-    while (--k){
+    int y = k / fact, pos = n - x + 2;
+
+    per[n - x + 1] = n - x + y;
+    per[n - x + y] = n - x + 1;
+
+    for (int i = n; i>= n - x + 1; --i){
+
+        if (i != per[n - x + 1]){
+
+            per[pos] = i;
+
+            ++pos;
+        }
+    }
+
+    k = k % fact;
+
+    int check = 0;  vector <int> :: iterator it;  
+ 
+    while (k--){
 
         pos = n + 1;  check = 0;
 
@@ -35,13 +72,15 @@ int main(int argc, char **argv){
 
             --pos; unvisited.push_back(per[pos]);
 
-            for (vector <int> :: iterator it = unvisited.begin(); it != unvisited.end(); ++it){
+            for (it = unvisited.begin(); it != unvisited.end(); ++it){
 
                 if (per[pos] < *it){
 
-                    per[pos] = *it;
-                    
-                    unvisited.erase(it);
+                    int tmp = *it;
+
+                    *it = per[pos];
+
+                    per[pos] = tmp;
 
                     check = 1;
 
@@ -50,9 +89,7 @@ int main(int argc, char **argv){
             }
         }
 
-        check = pos;  sort(unvisited.begin(), unvisited.end());
-
-        for (vector <int> :: iterator it = unvisited.begin(); it != unvisited.end(); ++it){
+        for (it = unvisited.begin(); it != unvisited.end(); ++it){
 
             ++pos;
 
@@ -60,25 +97,15 @@ int main(int argc, char **argv){
         }
 
         unvisited.clear();
-
-        if(check == 0) break;
-
     }
-
+ 
 
     //OUTPUT
-    if (k != 0){
 
-        printf("-1");
+   for (int i = 1; i <= n; ++i){
+
+       printf("%d ", per[i]);
     }
-    else{
-
-        for (int i = 1; i <= n; ++i){
-
-           printf("%d ", per[i]);
-        }
-    }
-
 
     return 0;
 }

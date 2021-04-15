@@ -1,85 +1,104 @@
+//Note: I think this is greedy algorithm but not exhaustive search algorithm
 #include <iostream>
-#include <vector>
+#include <algorithm>
+#include <limits>
 
 using namespace std;
 
 //Global Variables
+int n = 0, k = 0;  
 
+int per[10001];
+
+int unused[14];
 
 //List of functions
 
 
 //Main
-int main(int argc, char **argv){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
+int main(int argc, char **argv){ 
+    //ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
-    int n = 0, k = 0;  cin >> n >> k;
+    scanf("%d %d", &n, &k);
 
-    int per[n + 1];
-    vector <int> unvisited;
+
+    //
+    int x = 1;  unsigned long long fact = 1; 
 
     for (int i = 1; i <= n; ++i){
 
         per[i] = i;
+
+        if (fact <= k){
+
+            x = i;  fact = fact * x;
+        }
+    }  
+
+    if (k > fact){
+
+        printf("-1");
+        exit(0);
+    }
+
+    for (int i = 1; i <= 13; ++i){
+
+        if (i <= x)  unused[i] = n - x + i;
+        else
+            unused[i] = INT_MAX;
     }
 
     //
-    int pos = 0, check = 0;  vector <int> :: iterator it;
+    int index = INT_MAX - 1;
 
-    while (--k){
+    while(k > 0) { 
 
-        pos = n + 1;  check = 0;
+        fact = 1;        
+        for (x = 1; x <= 13; ++x){
 
-        while (check == 0 && pos >= 1){
+            fact = fact * x;
+            
+            if (k < fact) break;
+        }
 
-            --pos; unvisited.push_back(per[pos]);
+        for (int i = index + 1; i <= n - x; ++i){
 
-            for (it = unvisited.begin(); it != unvisited.end(); ++it){
+            per[i] = unused[1];
+            unused[1] = INT_MAX;
 
-                if (per[pos] < *it){
+            sort(unused + 1, unused + 14); 
+        }
 
-                    int tmp = *it;
+        fact = fact / x; 
 
-                    *it = per[pos];
+        int y = k / fact;  k = k % fact; index = n - x + 1;  
 
-                    per[pos] = tmp;
+        if (k != 0) ++y;
 
-                    check = 1;
+        per[index] = unused[y];
+        unused[y] = INT_MAX;
 
-                    break;
-                }
+        sort(unused + 1, unused + 14);
+        
+        if ( k == 0){
+
+            int pos = 1;
+            for (int i = n; i >= n - x + 2; --i){
+
+                per[i] = unused[pos];
+
+                ++pos;
             }
         }
-
-        check = pos; 
-
-        for (it = unvisited.begin(); it != unvisited.end(); ++it){
-
-            ++pos;
-
-            per[pos] = *it;
-        }
-
-        unvisited.clear();
-
-        if(check == 0) break;
-
     }
 
 
     //OUTPUT
-    if (k != 0){
 
-        printf("-1");
+    for (int i = 1; i <= n; ++i){
+
+       printf("%d ", per[i]);
     }
-    else{
-
-        for (int i = 1; i <= n; ++i){
-
-           printf("%d ", per[i]);
-        }
-    }
-
 
     return 0;
 }
