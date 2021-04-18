@@ -1,113 +1,60 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-//Global Variables
-int n = 0, k = 0;  
+const int N = 106;
+const int M = 5000;
 
-int per[10001];
+int n, m;
+int c[N];
+int r[N][N];
+int res = INT_MAX;
+int dress[3];
+bool choose[N];
+int curr = 0;
 
-vector <int> unvisited;
-
-//List of functions
-
-
-//Main
-int main(int argc, char **argv){
-    //ios_base::sync_with_stdio(false); cin.tie(NULL);
-    //INPUT
-    scanf("%d %d", &n, &k);
-
-
-    //
-    int x = 1; unsigned long long fact = 1; 
-
-    for (int i = 1; i <= n; ++i){
-
-        per[i] = i;
-
-        if (fact <= k){
-
-            x = i;
-
-            fact = fact * x;
-        }
-    }  
-
-    if (k > fact){
-
-        printf("-1");
-
-        exit(0);
-    }
-
-    fact = fact / x; 
-
-    int y = k / fact, pos = n - x + 2;
-
-    per[n - x + 1] = n - x + y;
-    per[n - x + y] = n - x + 1;
-
-    for (int i = n; i>= n - x + 1; --i){
-
-        if (i != per[n - x + 1]){
-
-            per[pos] = i;
-
-            ++pos;
-        }
-    }
-
-    k = k % fact;
-
-    int check = 0;  vector <int> :: iterator it;  
- 
-    while (k--){
-
-        pos = n + 1;  check = 0;
-
-        while (check == 0 && pos >= 1){
-
-            --pos; unvisited.push_back(per[pos]);
-
-            for (it = unvisited.begin(); it != unvisited.end(); ++it){
-
-                if (per[pos] < *it){
-
-                    int tmp = *it;
-
-                    *it = per[pos];
-
-                    per[pos] = tmp;
-
-                    check = 1;
-
-                    break;
-                }
-            }
-        }
-
-        for (it = unvisited.begin(); it != unvisited.end(); ++it){
-
-            ++pos;
-
-            per[pos] = *it;
-        }
-
-        unvisited.clear();
-    }
- 
-
-    //OUTPUT
-
-   for (int i = 1; i <= n; ++i){
-
-       printf("%d ", per[i]);
-    }
-
-    return 0;
+void duyet(int u){
+if (u > 3){
+res = min (res, curr);
+return;
 }
 
-//Functions
+for (int i = 1; i <= n; i++){
+if (!choose[i]){
+bool avail = true;
+for (int j = 1; j <= 3; j++){
+if (dress[j] != 0 && r[i][dress[j]] == 0){
+avail = false;
+break;
+}
+}
+
+if (avail){
+choose[i] = true;
+curr += c[i];
+dress[u] = i;
+
+duyet(u + 1);
+choose[i] = false;
+curr -= c[i];
+dress[u] = 0;
+}
+}
+}
+}
+
+int main(){
+ios_base::sync_with_stdio(0); cin.tie(0);
+cin >> n >> m;
+for (int i = 1; i <= n; i++)
+cin >> c[i];
+for (int i = 1; i <= m; i++){
+int u, v;
+cin >> u >> v;
+r[u][v] = r[v][u] = 1;
+}
+duyet(1);
+if (res == INT_MAX)
+cout << -1;
+else cout << res;
+return 0;
+}
