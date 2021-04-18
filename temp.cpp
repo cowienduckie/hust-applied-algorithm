@@ -1,60 +1,75 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+
 using namespace std;
 
-const int N = 106;
-const int M = 5000;
+//Global Variables
+int client_num = 0, truck_num = 0, max_cap = 0, route = 0;
 
-int n, m;
-int c[N];
-int r[N][N];
-int res = INT_MAX;
-int dress[3];
-bool choose[N];
-int curr = 0;
+vector <int> order;
+vector <bool> visited;
 
-void duyet(int u){
-if (u > 3){
-res = min (res, curr);
-return;
+void brute(int truck, int cap, int count){
+
+    if (truck == truck_num && count == client_num){
+        
+        route = (route + 1) % 1000000007;
+
+        return;
+    }
+
+    for (int i = 1; i <= client_num; ++i){
+
+        if (visited[i] == false){
+
+            visited[i] = true;
+
+            if (truck == truck_num){
+
+                if (cap < order[i]){
+
+                    visited[i] = false;
+                    return;
+                }
+                else{
+
+                    brute(truck, cap - order[i], count + 1);
+                }
+            }
+            else{
+
+                if (cap != max_cap)  brute(truck + 1, max_cap - order[i], count + 1);
+
+                if (cap >= order[i])  brute(truck, cap - order[i], count + 1);
+            }
+
+            visited[i] = false;
+        }
+    }
 }
 
-for (int i = 1; i <= n; i++){
-if (!choose[i]){
-bool avail = true;
-for (int j = 1; j <= 3; j++){
-if (dress[j] != 0 && r[i][dress[j]] == 0){
-avail = false;
-break;
-}
-}
 
-if (avail){
-choose[i] = true;
-curr += c[i];
-dress[u] = i;
+//
+int main(int argc, char **argv){
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
+    //INPUT
+    cin >> client_num >> truck_num >> max_cap;
 
-duyet(u + 1);
-choose[i] = false;
-curr -= c[i];
-dress[u] = 0;
-}
-}
-}
-}
+    order.resize(client_num + 1);
+    visited.resize(client_num + 1);
 
-int main(){
-ios_base::sync_with_stdio(0); cin.tie(0);
-cin >> n >> m;
-for (int i = 1; i <= n; i++)
-cin >> c[i];
-for (int i = 1; i <= m; i++){
-int u, v;
-cin >> u >> v;
-r[u][v] = r[v][u] = 1;
-}
-duyet(1);
-if (res == INT_MAX)
-cout << -1;
-else cout << res;
-return 0;
+    for (int i = 1; i <= client_num; ++i){
+
+        cin >> order[i];
+        visited[i] = false;
+    }
+    visited[0] = true;
+
+    //
+    brute(1, max_cap, 0);
+
+    //OUTPUT
+    cout << route;
+
+    return 0;
 }
