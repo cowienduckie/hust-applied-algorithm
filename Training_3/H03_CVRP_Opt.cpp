@@ -1,26 +1,25 @@
-//Classification Vehicle Routing Problem
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <limits>
 
 #define ull unsigned long long
-#define m 1000000007
 
 using namespace std;
 
-//Global variables
-int cus_num = 0, truck_num = 0, max_cap = 0; ull route = 0;
+//Global Variables
+int cus_num = 0, truck_num = 0, max_cap = 0, result = INT_MAX;
 
+vector <vector <int>> cost;
 vector <int> order;
-vector <int> store;
 vector <int> truck;
+vector <int> store;
 
 //Functions
 int cap(int cus){
 
     int tmp = 0;
 
-    for (int i = 0; i < cus_num; ++i){
+    for (int i = 1; i <= cus_num; ++i){
 
         if (cus & (1 << i)){
 
@@ -33,7 +32,7 @@ int cap(int cus){
 
 bool isInclude(int i, int cus){
 
-    for (int j = 0; j < cus_num; ++j){
+    for (int j = 1; j <= cus_num; ++j){
 
         if (i & (1 << j)){
 
@@ -47,33 +46,32 @@ bool isInclude(int i, int cus){
     return true; 
 }
 
-ull fact(int x){
+int tsp(int pos, int route){ 
 
-    if (x == 1 || x == 0) return 1;
+    if (route == (1 << (cus_num + 1)) - 1) return cost[pos][0];
 
-    return (x * fact(x - 1)) % m;
+    int result = INT_MAX;
+
+    for (int i = 1; i <= cus_num; ++i){
+
+        if (route & (1 << i))  continue;
+
+        result = min(result, cost[pos][i] + tsp(i, route | (1 << i)));
+    }
+
+    return result;
 }
 
 void checkRoute(){
 
-    ull tmp = 1;
+    int tmp_cost = 0;
 
     for (int i = 1; i <= truck_num; ++i){
 
-        int counter = 0;
-
-        for (int j = 0; j < cus_num; ++j){
-            
-            if (truck[i] & (1 << j)){
-
-                ++counter;
-            }
-        }
-
-        tmp = (tmp * fact(counter)) % m;
+        tmp_cost += tsp(0, (1 << (cus_num + 1)) - truck[i] - 1);
     }
 
-    route = (route + tmp) % m;
+    result = min(tmp_cost, result);
 }
 
 void vrp(int ind, int cus, int pos){
@@ -104,28 +102,38 @@ int main(int argc, char **argv){
     //INPUT
     cin >> cus_num >> truck_num >> max_cap;
 
+    cost.resize(cus_num + 1);
+    order.resize(cus_num + 1);
+    truck.resize(truck_num + 1);
+
     for (int i = 1; i <= cus_num; ++i){
 
-        int tmp = 0;  cin >> tmp;
+        cin >> order[i];
+    }
 
-        order.push_back(tmp);
+    for (int i = 0; i <= cus_num; ++i){
+
+        cost[i].resize(cus_num + 1);
+
+        for (int j = 0; j <= cus_num; ++j){
+
+            cin >> cost[i][j];
+        }
     }
 
     //
-    for (int i = 1; i <= (1 << cus_num) - 1; ++i){
+    for (int i = 2; i <= (1 << (cus_num + 1)) - 2; i += 2){
 
         if (cap(i) <= max_cap){
 
             store.push_back(i);
         }
     }
-
-    truck.resize(truck_num + 1);
-
-    vrp(1, (1 << cus_num) - 1, 0);
+    
+    vrp(1, (1 << (cus_num + 1)) - 2, 0);
 
     //OUTPUT
-    cout << route;
+    cout << result;
 
     return 0;
 }
