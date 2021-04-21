@@ -14,6 +14,8 @@ void nurse(int today, int on, int off){ //on -> number of work days until yester
         if (off == 1 || on >= min_work){
 
             ++result;
+
+            result %= m;
         }
         return;
     }
