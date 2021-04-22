@@ -7,4 +7,4 @@ Training 2: 14/14 </br>
 Training 3: 21/22</br>
 Training 3.1: 5/5 </br>
 Training 4: 9/9 </br>
-Training 5: 7/15 </br>
+Training 5: 13/15 </br>

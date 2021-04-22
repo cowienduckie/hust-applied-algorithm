@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cstring>
 
 #define ull unsigned long long
 #define INF 1e9
@@ -8,20 +9,16 @@
 using namespace std;
 
 //Global Variables
-int city_num = 0, path_len = 0, cable_num = 0;
+int city_num = 0, path_len = 0, cable_num = 0, result = INF;
 
 vector <vector <pair <int, int> > > network;
-
-vector <vector <ull> > mem;
 
 vector <int> path;
 
 //Functions
-ull link(int last_sv, int pos){
+void link(int last_sv, int pos, int cost){
 
-    if (mem[last_sv][pos] != 0) return mem[last_sv][pos];
-
-    ull result = INF;
+    if (cost >= result) return;
 
     for (pair <int, int> sv : network[last_sv]){
 
@@ -31,23 +28,19 @@ ull link(int last_sv, int pos){
 
             if (pos == path_len){
 
-                if (result > sv.second)  result = sv.second;
+                result = min(result, cost + sv.second);
 
             }
             else{
 
                 path.push_back(sv.first);
 
-                result = min(result, sv.second + link(sv.first, pos + 1));
+                link(sv.first, pos + 1, cost + sv.second);
 
                 path.pop_back();
             }
         }
     }
-
-    mem[last_sv][pos] = result;
-
-    return result;
 }
 
 
@@ -73,20 +66,10 @@ int main(int argc, char **argv){
         network[0].push_back({i, 0});
     }
 
-    mem.resize(city_num + 1);
-
-    for (int i = 0; i <= city_num; ++i){
-
-        mem[i].resize(path_len + 1);
-
-        for (int j = 0; j <= path_len; ++j){
-
-            mem[i][j] = 0;
-        }
-    }
+    link(0, 0, 0);
 
     //OUTPUT
-    cout << link(0,0);
+    cout << result;
 
     return 0;
 }
