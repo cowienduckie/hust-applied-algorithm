@@ -1,75 +1,57 @@
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
 //Global Variables
-int client_num = 0, truck_num = 0, max_cap = 0, route = 0;
+int n = 0, k = 0, limit = 0;
 
-vector <int> order;
-vector <bool> visited;
+char *bit_str;
 
-void brute(int truck, int cap, int count){
+//Functions
+void brutal_zero(int pos, int zero){
 
-    if (truck == truck_num && count == client_num){
-        
-        route = (route + 1) % 1000000007;
+    if (pos == n){
+
+        --k;
+
+        if (k == 0){
+
+            for (int i = 0; i < n; ++i){
+
+                printf("%c ", *(bit_str + i));
+            }
+
+            exit(0);
+        }
 
         return;
     }
 
-    for (int i = 1; i <= client_num; ++i){
+    if (zero + 1 < limit){
 
-        if (visited[i] == false){
+        bit_str[pos] = '0';
 
-            visited[i] = true;
-
-            if (truck == truck_num){
-
-                if (cap < order[i]){
-
-                    visited[i] = false;
-                    return;
-                }
-                else{
-
-                    brute(truck, cap - order[i], count + 1);
-                }
-            }
-            else{
-
-                if (cap != max_cap)  brute(truck + 1, max_cap - order[i], count + 1);
-
-                if (cap >= order[i])  brute(truck, cap - order[i], count + 1);
-            }
-
-            visited[i] = false;
-        }
+        brutal_zero(pos + 1, zero + 1);
     }
-}
 
+    bit_str[pos] = '1';
+
+    brutal_zero(pos + 1, 0);
+}
 
 //
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
-    cin >> client_num >> truck_num >> max_cap;
+    cin >> n >> k >> limit;
 
-    order.resize(client_num + 1);
-    visited.resize(client_num + 1);
-
-    for (int i = 1; i <= client_num; ++i){
-
-        cin >> order[i];
-        visited[i] = false;
-    }
-    visited[0] = true;
+    bit_str = (char *)calloc(n, sizeof(char));
 
     //
-    brute(1, max_cap, 0);
+    brutal_zero(0, 0);
 
     //OUTPUT
-    cout << route;
+    cout << -1;
 
     return 0;
 }

@@ -73,7 +73,7 @@ int main(int argc, char **argv){
     }
     
     //OUTPUT
-    for (int i = 0; i < n; ++i)  cout << str[i] << " ";
+    for (int i = 0; i < n; ++i)  printf("%c ", str[i]);
 
     return 0;
 }
