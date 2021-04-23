@@ -1,58 +1,57 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <cstring>
 
 #define ull unsigned long long
 #define INF 1e9
+#define N 10001
+#define K 2001
 
 using namespace std;
 
 //Global Variables
-int city_num = 0, path_len = 0, cable_num = 0, result = INF;
+int n = 0, k = 0, adj = 0, result = INF;
 
-vector <vector <pair <int, int> > > network;
+vector <pair <int, int> > network[N];
 
-vector <int> path;
+int dp[N][K];
+
+
 
 //Functions
-void link(int last_sv, int pos, int cost){
+void dfs(int root, int parent){
 
-    if (cost >= result) return;
+    fill(dp[root], dp[root] + k + 1, INF);  dp[root][0] = 0;   //Zero cost to visit root itself
 
-    for (pair <int, int> sv : network[last_sv]){
+    for (pair <int, int> p : network[root]){
 
-        vector <int> :: iterator tmp = find(path.begin(), path.end(), sv.first);
+        int next = p.first;
+        int cost = p.second;
 
-        if (tmp == path.end()){
+        if (next == parent)  continue;  //Don't come back parent node
 
-            if (pos == path_len){
+        dfs(next, root);
 
-                result = min(result, cost + sv.second);
+        for (int kk = 0; kk < k; ++kk){  //Update result that through root from next sub tree to previous sub tree
 
-            }
-            else{
-
-                path.push_back(sv.first);
-
-                link(sv.first, pos + 1, cost + sv.second);
-
-                path.pop_back();
-            }
+            result = min(result, dp[next][kk] + cost + dp[root][k - kk - 1]);
         }
+
+        for (int i = 1; i < k; ++i){  //Update min cost of paths start form root and depth of i
+
+            dp[root][i] = min(dp[root][i], cost + dp[next][i - 1]);
+        }
+        
     }
 }
-
 
 //
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
-    cin >> city_num >> path_len >> cable_num;
- 
-    network.resize(city_num + 1);
+    cin >> n >> k >> adj;
 
-    for (int i = 1; i <= cable_num; ++i){
+    for (int i = 1; i <= adj; ++i){
 
         int src = 0, dst = 0, cost = 0;  cin >> src >> dst >> cost;  
 
@@ -61,12 +60,8 @@ int main(int argc, char **argv){
     }
 
     //
-    for (int i = 1; i <= city_num; ++i){
-
-        network[0].push_back({i, 0});
-    }
-
-    link(0, 0, 0);
+    
+    dfs(1, 0);
 
     //OUTPUT
     cout << result;

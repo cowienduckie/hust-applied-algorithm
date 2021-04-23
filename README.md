@@ -7,4 +7,12 @@ Training 2: 14/14 </br>
 Training 3: 21/22</br>
 Training 3.1: 5/5 </br>
 Training 4: 9/9 </br>
-Training 5: 13/15 </br>
+Training 5: 15/15 </br>
+Training 6: 0/19 </br>
+Training 7: 1/4 </br>
+Mixed Training: 30/50 </br>
+</br>
+Midterm 1: 3/3 </br>
+Midterm 2: </br>
+Midterm 3: </br>
+Final Exams: </br>
