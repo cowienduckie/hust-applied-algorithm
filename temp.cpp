@@ -1,57 +1,69 @@
+// C++ program to find the
+// length of longest alternate
+// subsequence
 #include <iostream>
-
 using namespace std;
-
-//Global Variables
-int n = 0, k = 0, limit = 0;
-
-char *bit_str;
-
-//Functions
-void brutal_zero(int pos, int zero){
-
-    if (pos == n){
-
-        --k;
-
-        if (k == 0){
-
-            for (int i = 0; i < n; ++i){
-
-                printf("%c ", *(bit_str + i));
-            }
-
-            exit(0);
-        }
-
-        return;
+  
+// LAS[i][pos] array to find
+// the length of LAS till
+// index i by including or
+// excluding element arr[i]
+// on the basis of value of pos
+int LAS[1000][2] = { false };
+  
+int solve(int arr[], int n, int i, bool pos)
+{
+    // Base Case
+    if (i == n)
+        return 0;
+  
+    if (LAS[i][pos])
+        return LAS[i][pos];
+  
+    int inc = 0, exc = 0;
+  
+    // If current element is
+    // positive and pos is true
+    // Include the current element
+    // and change pos to false
+    if (arr[i] > 0 && pos == true) {
+        pos = false;
+  
+        // Recurr for the next
+        // iteration
+        inc = 1 + solve(arr, n, i + 1, pos);
     }
-
-    if (zero + 1 < limit){
-
-        bit_str[pos] = '0';
-
-        brutal_zero(pos + 1, zero + 1);
+  
+    // If current element is
+    // negative and pos is false
+    // Include the current element
+    // and change pos to true
+    else if (arr[i] < 0 && pos == false) {
+        pos = true;
+  
+        // Recurr for the next
+        // iteration
+        inc = 1 + solve(arr, n, i + 1, pos);
     }
-
-    bit_str[pos] = '1';
-
-    brutal_zero(pos + 1, 0);
+  
+    // If current element is
+    // excluded, reccur for
+    // next iteration
+    exc = solve(arr, n, i + 1, pos);
+  
+    LAS[i][pos] = max(inc, exc);
+  
+    return LAS[i][pos];
 }
-
-//
-int main(int argc, char **argv){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    //INPUT
-    cin >> n >> k >> limit;
-
-    bit_str = (char *)calloc(n, sizeof(char));
-
-    //
-    brutal_zero(0, 0);
-
-    //OUTPUT
-    cout << -1;
-
-    return 0;
+  
+// Driver's Code
+int main()
+{
+    int arr[] = { -1, 2, 3, 4, 5,
+                  -6, 8, -99 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+  
+    // Print LAS
+    cout << max(solve(arr, n, 0, 0),
+                solve(arr, n, 0, 1));
 }
