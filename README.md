@@ -8,7 +8,7 @@ Training 3: 21/22</br>
 Training 3.1: 5/5 </br>
 Training 4: 9/9 </br>
 Training 5: 15/15 </br>
-Training 6: 6/19 </br>
+Training 6: 9/19 </br>
 Training 7: 3/4 </br>
 Mixed Training: 33/50 </br>
 </br>

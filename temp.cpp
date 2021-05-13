@@ -1,67 +1,85 @@
 #include <iostream>
-#include <bitset>
-#include <string>
-#include <functional>
-#include <algorithm>
+#include <vector>
 
 using namespace std;
 
-string ltrim(const string &);
-string rtrim(const string &);
 
-void max_1(int n){
-    
-    string binary = bitset<32>(n).to_string();
-    
-    int count = 0, res = 0;
-    
-    for (int i = 0; i < 32; ++i){
-        
-        if (binary[i] == '1'){
+class Person{
+	protected:
+		string firstName;
+		string lastName;
+		int id;
+	public:
+		Person(string firstName, string lastName, int identification){
+			this->firstName = firstName;
+			this->lastName = lastName;
+			this->id = identification;
+		}
+		void printPerson(){
+			cout<< "Name: "<< lastName << ", "<< firstName <<"\nID: "<< id << "\n"; 
+		}
+	
+};
+
+class Student : public Person { 
+	private:
+		vector<int> testScores; 
+	public:
+        /*	
+        *   Class Constructor
+        *   
+        *   Parameters:
+        *   firstName - A string denoting the Person's first name.
+        *   lastName - A string denoting the Person's last name.
+        *   id - An integer denoting the Person's ID number.
+        *   scores - An array of integers denoting the Person's test scores.
+        */
+        // Write your constructor here
+        Student(string firstName, string lastName, int id, vector<int> testScores) : Person(firstName, lastName, id) {
             
-            ++count;
+            this->testScores  = testScores;
         }
-        else{
-            
-            res = max(res, count);
-            
-            count = 0;
+        /*	
+        *   Function Name: calculate
+        *   Return: A character denoting the grade.
+        */
+        // Write your function here
+        char calculate(){
+
+            double avg = 0;
+
+            for (int i : this->testScores){
+
+                avg += i;
+            }
+
+            avg /= this->testScores.size();
+
+            if (avg < 40)  return 'T';
+            if (avg < 55)  return 'D';
+            if (avg < 70)  return 'P';
+            if (avg < 80)  return 'A';
+            if (avg < 90)  return 'E';
+            if (avg <= 100)  return 'O';
+
+            return 'U';
         }
-    }
-    
-    cout << binary;
-}
+};
 
-int main()
-{
-    string n_temp;
-    getline(cin, n_temp);
-
-    int n = stoi(ltrim(rtrim(n_temp)));
-    
-    max_1(n);
-
-    return 0;
-}
-
-string ltrim(const string &str) {
-    string s(str);
-
-    s.erase(
-        s.begin(),
-        find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
-    );
-
-    return s;
-}
-
-string rtrim(const string &str) {
-    string s(str);
-
-    s.erase(
-        find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
-        s.end()
-    );
-
-    return s;
+int main() {
+	string firstName;
+  	string lastName;
+	int id;
+  	int numScores;
+	cin >> firstName >> lastName >> id >> numScores;
+  	vector<int> scores;
+  	for(int i = 0; i < numScores; i++){
+	  	int tmpScore;
+	  	cin >> tmpScore;
+		scores.push_back(tmpScore);
+	}
+	Student* s = new Student(firstName, lastName, id, scores);
+	s->printPerson();
+	cout << "Grade: " << s->calculate() << "\n";
+	return 0;
 }
