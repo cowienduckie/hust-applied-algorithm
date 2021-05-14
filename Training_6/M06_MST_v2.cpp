@@ -14,13 +14,6 @@ struct edge{
     int u;
     int v;
     int w;
-
-    edge(int u, int v, int w){
-
-        this->u = u;
-        this->v = v;
-        this->w = w;
-    }
 };
 
 //Global variables
