@@ -1,124 +1,73 @@
-// C++ program to print all the cycles
-// in an undirected graph
-#include <bits/stdc++.h>
+#include <iostream>
+#include <cmath>
+#include <string>
+
+#define ull unsigned long long
+
 using namespace std;
-const int N = 100000;
 
-// variables to be used
-// in both functions
-vector<int> graph[N];
-vector<int> cycles[N];
+//
+int main(int argc, char **argv){
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
+    //INPUT
+    int test = 0; cin >> test;
 
-// Function to mark the vertex with
-// different colors for different cycles
-void dfs_cycle(int u, int p, int color[],
-			int mark[], int par[], int& cyclenumber)
-{
+    ull val[16];
 
-	// already (completely) visited vertex.
-	if (color[u] == 2) {
-		return;
-	}
+    for (int i = 0; i <= 15; ++i){
 
-	// seen vertex, but was not completely visited -> cycle detected.
-	// backtrack based on parents to find the complete cycle.
-	if (color[u] == 1) {
+        val[i] = 5000 * pow(10, i);
+    }
 
-		cyclenumber++;
-		int cur = p;
-		mark[cur] = cyclenumber;
+    //4 = 3 + 1 = 2 + 2
+    //6 = 5 + 1 = 3 + 3
+    //9 = 5 + 3 + 1 = 5 + 2 + 2 = 3 + 3 + 3;
+    while (test--){
+        
+		string W;  int c;  cin >> W >> c;
 
-		// backtrack the vertex which are
-		// in the current cycle thats found
-		while (cur != u) {
-			cur = par[cur];
-			mark[cur] = cyclenumber;
+		ull note = 0, cases = 1;
+
+		int len = W.length();
+
+		for (int i = len - 1; i >= 3; --i){
+
+			int d =  atoi(W[i]);
 		}
-		return;
-	}
-	par[u] = p;
 
-	// partially visited.
-	color[u] = 1;
+        for (int i = c; i >= 0; --i){
 
-	// simple dfs on graph
-	for (int v : graph[u]) {
+            ull t = W / pow(10, i + 3);  W -= t * pow(10, i + 3);
 
-		// if it has not been visited previously
-		if (v == par[u]) {
-			continue;
-		}
-		dfs_cycle(v, u, color, mark, par, cyclenumber);
-	}
+            if(t == 0){
 
-	// completely visited.
-	color[u] = 2;
-}
+                continue;
+            }
+            else if (t == 9){
 
-// add the edges to the graph
-void addEdge(int u, int v)
-{
-	graph[u].push_back(v);
-	graph[v].push_back(u);
-}
+                note += 3;
 
-// Function to print the cycles
-void printCycles(int edges, int mark[], int& cyclenumber)
-{
+                cases *= 3;
+            }
+            else if (t == 4 || t == 6){
 
-	// push the edges that into the
-	// cycle adjacency list
-	for (int i = 1; i <= edges; i++) {
-		if (mark[i] != 0)
-			cycles[mark[i]].push_back(i);
-	}
+                note += 2;
 
-	// print all the vertex with same cycle
-	for (int i = 1; i <= cyclenumber; i++) {
-		// Print the i-th cycle
-		cout << "Cycle Number " << i << ": ";
-		for (int x : cycles[i])
-			cout << x << " ";
-		cout << endl;
-	}
-}
+                cases *= 2;
+            }
+            else if (t == 1 || t == 2 || t == 3 || t == 5){
+                note += 1;
+            }
+            else{
 
-// Driver Code
-int main()
-{
+                note += 2;
+            }
+        }
 
-	// add edges
-	addEdge(1, 2);
-	addEdge(2, 3);
-	addEdge(3, 4);
-	addEdge(4, 6);
-	addEdge(4, 7);
-	addEdge(5, 6);
-	addEdge(3, 5);
-	addEdge(7, 8);
-	addEdge(6, 10);
-	addEdge(5, 9);
-	addEdge(10, 11);
-	addEdge(11, 12);
-	addEdge(11, 13);
-	addEdge(12, 13);
-    addEdge(9, 11);
+        if (W == 0)  cout << note << " " << cases << endl;
+        else
+            cout << 0 << endl;
+    }
 
-	// arrays required to color the
-	// graph, store the parent of node
-	int color[N];
-	int par[N];
-
-	// mark with unique numbers
-	int mark[N];
-
-	// store the numbers of cycle
-	int cyclenumber = 0;
-	int edges = 14;
-
-	// call DFS to mark the cycles
-	dfs_cycle(1, 0, color, mark, par, cyclenumber);
-
-	// function to print the cycles
-	printCycles(edges, mark, cyclenumber);
+    return 0;
 }
