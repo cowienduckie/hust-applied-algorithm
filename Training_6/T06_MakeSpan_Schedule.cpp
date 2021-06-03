@@ -14,13 +14,13 @@ vector <int> d(N, 0);
 vector <bool> mark(N, false);
 
 //Functions
-long long dfs(int u){
+int dfs(int u){
 
     if (mark[u] == true) return 0;
 
     mark[u] = true;
 
-    long long res = INF;
+    int res = INF;
 
     for (int v : adj[u]){
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv){
     }
     
     //
-    long long result = 0;
+    int result = 0;
 
     for (int u = 1; u <= V; ++u){
 

@@ -38,7 +38,7 @@ int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
     cin >> n >> k >> zero;
-
+    
     //
     brutal_zero();
 

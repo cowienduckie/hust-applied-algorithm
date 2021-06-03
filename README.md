@@ -10,7 +10,6 @@ Training 4: 9/9 </br>
 Training 5: 15/15 </br>
 Training 6: 17/19 </br>
 Training 7: 3/4 </br>
-Mixed Training: 35/50 </br>
 </br>
 Midterm 1: 3/3 </br>
 Midterm 2: </br>
