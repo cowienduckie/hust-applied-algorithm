@@ -11,7 +11,7 @@ Training 5: 15/15 </br>
 Training 6: 17/19 </br>
 Training 7: 3/4 </br>
 </br>
-Midterm 1: 3/3 </br>
-Midterm 2: </br>
+Midterm 1: 300/300 </br>
+Midterm 2: 251/300 (Answers updated)</br>
 Midterm 3: </br>
 Final Exams: </br>
