@@ -1,73 +1,82 @@
 #include <iostream>
-#include <cmath>
+#include <algorithm>
+#include <vector>
 #include <string>
 
-#define ull unsigned long long
+#define N 10010
 
 using namespace std;
 
-//
-int main(int argc, char **argv){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    //INPUT
-    int test = 0; cin >> test;
+vector <string> s(N, "");
 
-    ull val[16];
+string genZeros(int len, int z){
 
-    for (int i = 0; i <= 15; ++i){
+    string str;
 
-        val[i] = 5000 * pow(10, i);
+    int counter = 1;
+
+    for (int i = 1; i <= len; ++i){
+
+        if (counter == z){
+
+            str += "1";
+
+            counter = 1;
+        }
+        else{
+
+            str += "0";
+
+            ++counter;
+        }
+
+        s[i] = str;
     }
 
-    //4 = 3 + 1 = 2 + 2
-    //6 = 5 + 1 = 3 + 3
-    //9 = 5 + 3 + 1 = 5 + 2 + 2 = 3 + 3 + 3;
-    while (test--){
-        
-		string W;  int c;  cin >> W >> c;
+    return str;
+}
 
-		ull note = 0, cases = 1;
+int main(int argc, char **argv){
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
+    //
+    int n, k, z;  cin >> n >> k >> z;
 
-		int len = W.length();
+    string str = genZeros(n, z);
 
-		for (int i = len - 1; i >= 3; --i){
+    while (--k){
 
-			int d =  atoi(W[i]);
-		}
+        bool skip = true;
 
-        for (int i = c; i >= 0; --i){
+        for (int i = n - 1; i >= 0; --i){
 
-            ull t = W / pow(10, i + 3);  W -= t * pow(10, i + 3);
+            if (str[i] == '0'){
 
-            if(t == 0){
+                int len = n - i;
 
-                continue;
-            }
-            else if (t == 9){
+                skip = false;
 
-                note += 3;
+                str[i] = '1';
 
-                cases *= 3;
-            }
-            else if (t == 4 || t == 6){
+                if (len == 0)  break;
 
-                note += 2;
+                str.replace(i + 1, len, s[len]);
 
-                cases *= 2;
-            }
-            else if (t == 1 || t == 2 || t == 3 || t == 5){
-                note += 1;
-            }
-            else{
-
-                note += 2;
+                break;
             }
         }
 
-        if (W == 0)  cout << note << " " << cases << endl;
-        else
-            cout << 0 << endl;
+        if (skip) break;
     }
+
+    if (k != 0)  cout << -1;
+    else{
+
+        for (int i = 0; i < n; ++i){
+
+            printf("%c ", str[i]);
+        }
+    }
+        
 
     return 0;
 }

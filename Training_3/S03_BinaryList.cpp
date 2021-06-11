@@ -1,79 +1,187 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cmath>
 #include <string>
+
+#define N 10010
 
 using namespace std;
 
-//Global Variables
-int n = 0, k = 0, zero = 0;  
+vector <string> s(N, "");
 
-string str;
-string brute[10000];
+string initString(int len, int z){
 
-//Functions
-void brutal_zero(){
+    string str;
 
-    int zero_count = 1;  string tmp;
+    int counter = 1;
 
-    for (int i = 0; i < n; ++i){
+    for (int i = 1; i <= len; ++i){
 
-        if(zero_count < zero){
+        if (counter == z){
 
-            tmp += "0";
+            str += "1";
 
-            ++zero_count;
+            counter = 1;
         }
         else{
 
-            tmp += "1";
+            str += "0";
 
-            zero_count = 1;
+            ++counter;
         }
 
-        brute[n - i - 1] = tmp;
+        s[i] = str;
     }
+
+    return str;
 }
 
-//
+string genStringOfOnes(int len){
+
+    string str = "";
+
+    for (int i = 0; i < len; ++i){
+
+        str += "1";
+    }
+
+    return str;
+}
+
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
-    //INPUT
-    cin >> n >> k >> zero;
-    
     //
-    brutal_zero();
+    int n, k, z;  cin >> n >> k >> z;
 
-    str = brute[0]; 
+    //
+    if (n >= z){  //Using DP
 
-    while(--k){
+        vector<long long> dp(n + 1, 0);
 
-        int check = 0;
+        int limit = min(z, 30);
 
-        for (int i = n - 1; i >= 0; --i){
+        for (int i = 0; i <= limit; ++i){
 
-            if (str[i] == '0'){
+            dp[i] = pow(2, i);
+        }
 
-                string tmp;
+        --dp[limit];
 
-                if (i == n - 1)  tmp = "1";
-                else
-                    tmp = "1" + brute[i + 1];
-                
-                str.replace(i, n - i, tmp);
+        int i = 1;  bool flag = true;
 
-                check = 1;  break;
+        for ( ; i <= n; ++i){
+
+            if (i > limit){
+
+                for (int j = 1; j <= limit; ++j){
+
+                    dp[i] += dp[i - j];
+                }
+            }
+
+            if (dp[i] > k){
+
+                flag = false;
+
+                break;
             }
         }
 
-        if (check == 0){
+        if (flag){  //k > total of configs 
 
             cout << -1;
 
-            return 0;
+            exit(0);
+        }
+
+        //
+        string str = initString(n, z);  --k;
+
+        while (k > 0){
+
+            int i = 1;
+
+            for ( ; i <= n; ++i){
+
+                if (str[n - i] == '0'){
+
+                    if (dp[i - 1] <= k){
+
+                        k -= dp[i - 1];
+                    }
+                    else{
+
+                        break;
+                    }
+                }
+            }
+
+            if (k == 0){  //replace substring with all 1s length i
+
+                str.replace(n - i + 1, i - 1, genStringOfOne(i - 1));
+            }
+            else{   //replace substring with standard rule
+
+                str.replace(n - i + 1, i - 1, s[i - 1]);
+
+                str[n - i] = '1';
+
+                --k;
+            }
+        }
+
+        //Output
+        for (int i = 0; i < n; ++i){
+
+            printf("%c ", str[i]);
+        }   
+    }
+    else{  //If z > n --> normal binary list
+
+        int i = 1;
+
+        for ( ; i <= n; ++i){
+
+            long long tmp = pow(2, i);
+
+            if (tmp > k)  break;
+        }
+
+        n -= i;
+
+        --i; 
+
+        string str = "";  --k;
+
+        while (i >= 0){
+
+            long long tmp = pow(2, i);
+
+            if (k >= tmp){
+
+                k -= tmp;
+
+                str += "1";
+            }
+            else{
+
+                str += "0";
+            }
+
+            --i;
+        }
+
+        for (int i = 1; i <= n; ++i){
+
+            str = "0" + str;
+        }
+
+        for (int i = 0; i < str.length(); ++i){
+
+        printf("%c ", str[i]);
         }
     }
-    
-    //OUTPUT
-    for (int i = 0; i < n; ++i)  printf("%c ", str[i]);
 
     return 0;
 }

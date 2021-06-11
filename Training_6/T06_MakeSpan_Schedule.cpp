@@ -6,29 +6,22 @@
 
 using namespace std;
 
+struct edge{
+
+    int v;
+    int w;
+}
+
 //Global Variables
 int V = 0, E = 0;
 
 vector <int> adj[N];
 vector <int> d(N, 0);
-vector <bool> mark(N, false);
+
 
 //Functions
-int dfs(int u){
+void span
 
-    if (mark[u] == true) return 0;
-
-    mark[u] = true;
-
-    int res = INF;
-
-    for (int v : adj[u]){
-
-        res = min(dfs(v), res);
-    }
-
-    return res + d[u];
-}
 
 //
 int main(int argc, char **argv){
@@ -39,25 +32,21 @@ int main(int argc, char **argv){
     for (int u = 1; u <= V; ++u){
 
         cin >> d[u];
+
+        adj[u].push_back(0);
     }
 
     for (int i = 0; i < E; ++i){
 
         int u = 0, v = 0;  cin >> v >> u;
 
-        adj[u].push_back(v);
+        adj[u].push_back({v, d[u]});
     }
     
     //
     int result = 0;
 
-    for (int u = 1; u <= V; ++u){
-
-        if (mark[u] == false){
-
-            result = max(result,dfs(u));
-        }
-    }
+    
 
     //OUTPUT
     cout << result << endl;
