@@ -1,4 +1,7 @@
 //Bellman Ford algorithm
+//Space problem is solved but algorithm is too slow for tests
+//
+//Dijkstra algorithm -> Time complexity: O (|V| * log(|E|))
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -76,16 +79,6 @@ void printAnswer(int t){
 }
 
 void solve(){
-
-    auto compare = [](edge &a, edge &b){
-
-        return a.v > b.v;
-    };
-
-    for (int u = 1; u <= V; ++u){
-
-        sort(adj[u].begin(), adj[u].end(), compare);
-    }
 
     int s, t;  cin >> s >> t;
 

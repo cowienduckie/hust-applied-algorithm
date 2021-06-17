@@ -1,7 +1,6 @@
 //Floyd Warshall algorithm using DP
 //Space complexity O(|V|^2) -> too large for N = 10^5 
-//Other algorithms
-//Dijkstra algorithm -> Cannot choose start point
+//
 //Bellman Ford algorithm -> Nice to try, space complexity O(2|V| + |E|)
 #include <iostream>
 #include <algorithm>
