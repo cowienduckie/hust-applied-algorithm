@@ -112,15 +112,17 @@ void greedy3()  //value on distance first (then value)
 
             if (visited[i])  continue;
 
-            if (maxim < (double)a[i] / d[u][i])
+            double val_on_dist = (double)min(a[i], target) / d[u][i];
+
+            if (maxim < val_on_dist)
             {
                 v = i;
-                maxim = (double)a[i] / d[u][i];
+                maxim = val_on_dist;
             }
-            else if(maxim == (double)a[i] / d[u][i] && a[i] > a[v])
+            else if(maxim == val_on_dist && a[i] > a[v])
             {
                 v = i;
-                maxim = (double)a[i] / d[u][i];
+                maxim = val_on_dist;
             }
         }
 
@@ -152,22 +154,25 @@ void greedy4()  //value on distance first (then distance)
         int v = 0;
         double maxim = 0;
 
-        for (int i = 1; i <= n; ++i){
-
+        for (int i = 1; i <= n; ++i)
+        {
             if (visited[i])  continue;
 
-            if (maxim < (double)a[i] / d[u][i])
+            double val_on_dist = (double)min(a[i], target) / d[u][i];
+
+            if (maxim < val_on_dist)
             {
                 v = i;
-                maxim = (double)a[i] / d[u][i];
+                maxim = val_on_dist;
             }
-            else if(maxim == (double)a[i] / d[u][i] && d[u][i] < d[u][v])
+            else if(maxim == val_on_dist && d[u][i] < d[u][v])
             {
                 v = i;
-                maxim = (double)a[i] / d[u][i];
+                maxim = val_on_dist;
             }
         }
 
+        //update
         tmp_len += d[u][v];
         target -= a[v];
         visited[v] = true;
@@ -213,6 +218,12 @@ void solve()
     greedy4();
 
     //output
+    if (len == INF)
+    {
+        cout << -1 << endl;
+        return;
+    }
+
     cout << len << endl;
     cout << result.size() << endl;
 
