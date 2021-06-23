@@ -12,52 +12,44 @@ using namespace std;
 //Global Variables
 int V = 0, E = 0;
 
-vector <int> adj[N];        //list of tasks can start after completetion of i-th
-vector <ll> d(N, 0);       //duration of tasks
+vector <int> adj[N];        //list of tasks may start after completetion of i-th
+vector <int> d(N, 0);       //duration of tasks
 vector <int> mark(N, 0);    //number of tasks must be completed before i-th
-vector <bool> visited(N, false);
 
 //Functions
 void best_topo(){
 
-    ll result = 0;
+    int result = 0;
 
-    priority_queue <pair<ll , int>, 
-                    vector <pair<ll, int>>, 
-                    greater <pair<ll, int>>> PQ;
-    //first -> start time   second -> task
+    priority_queue <pair<int , int>, 
+                    vector <pair<int, int>>, 
+                    greater <pair<int, int>>> PQ;
+    //first -> complete time   second -> task
 
-    for (int u = 1; u <= V; ++u){ //push all tasks has mark = 0
+    for (int u = 1; u <= V; ++u){ //push all tasks having mark = 0
 
         if(mark[u] == 0){
 
-            PQ.push({0, u});
+            PQ.push({d[u], u});
         }
     }
 
     while (!PQ.empty()){
 
-        if (visited[PQ.top().second]){
-
-            PQ.pop();
-            continue;
-        }
-
-        ll start = PQ.top().first; int u = PQ.top().second; 
+        int complete = PQ.top().first; int u = PQ.top().second; 
         PQ.pop();
 
         for (int v : adj[u]){
 
             --mark[v];
 
-            if (mark[v] == 0)  PQ.push({start + d[u], v});
+            if (mark[v] == 0)  PQ.push({complete + d[v], v});
         }
 
-        result = max(result, start + d[u]);
-        visited[u] = true;
+        result = max(result, complete);
     }
 
-    cout << result;
+    cout << result << endl;
 }
 
 

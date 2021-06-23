@@ -8,7 +8,7 @@ Training 3: 22/22</br>
 Training 3.1: 6/6 </br>
 Training 4: 9/9 </br>
 Training 5: 15/15 </br>
-Training 6: 17/19 </br>
+Training 6: 18/18 </br>
 Training 7: 4/4 </br>
 </br>
 Midterm 1: 300/300 </br>

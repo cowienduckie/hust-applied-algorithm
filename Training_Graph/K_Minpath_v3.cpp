@@ -88,16 +88,6 @@ void trace(int u, int s){
 
 void solve(){
 
-    auto compare = [](edge &a, edge &b){
-
-        return a.v > b.v;
-    };
-
-    for (int u = 1; u <= V; ++u){
-
-        sort(adj[u].begin(), adj[u].end(), compare);
-    }
-
     int s, t;  cin >> s >> t;
 
     dijkstra(s, t);
