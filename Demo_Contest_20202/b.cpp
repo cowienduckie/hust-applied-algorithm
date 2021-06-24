@@ -1,77 +1,71 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
-#include <stack>
 
-#define M 1000000007
+#define ll long long
+#define ull unsigned long long
+#define mod 1000000007
+#define N 1010
+#define INF 1e9
 
 using namespace std;
 
-//Global Variables
-string s; 
-int len = 0, result;
-stack <char> st;
+//global variables
+string s;
+int n;
+vector <vector <int>> dp(N, vector <int> (N, -1));
 
-//Functions
-void brute(int i){
-
-    if (i == len){
-
-        if (st.empty())  result = (result + 1) % M;
+//functions
+int brCount(int i, int st) //i -> index | st -> remaining open brackets in stack
+{   
+    if (i == n)
+    {
+        if (st == 0) return 1;
+        else
+            return 0;
     }
 
-    if (s[i] == '?'){
+    if (st < 0) return 0;
 
-        st.push('(');  
+    if (dp[i][st] != -1)  return dp[i][st];
 
+    int res = 0;
 
-        brute(i + 1);
-
-        st.pop();
-        
-
-        if (!st.empty()){
-
-            st.pop();
-
-            brute(i + 1);
-
-            st.push(')');
-        }     
+    if (s[i] == '(')
+    {
+        res = brCount(i + 1, st + 1) % mod;
     }
-    else if (s[i] == '('){
-
-            st.push('(');
-
-            brute(i + 1);
-
-            st.pop();
+    else if (s[i] == ')')
+    {
+        res = brCount(i + 1, st - 1) % mod;
     }
-    else{
+    else
+    {
+        res += brCount(i + 1, st + 1) % mod;
 
-        if (st.empty()){
+        res += brCount(i + 1, st - 1) % mod;
+    }
 
-            return;
-        }
-        else{
+    dp[i][st] = res % mod;
 
-            st.pop();
+    return res % mod;
+}
 
-            brute(i + 1);
+void solve()
+{
+    getline(cin, s);
+    n = s.length();
 
-            st.push(')');
-        }
-    }      
+    cout << brCount(0, 0) << endl;
 }
 
 //
-int main(int argc, char **argv){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
+int main(int argc, char **argv)
+{
+    ios_base::sync_with_stdio(0); cin.tie(0);
     //
-    getline(cin, s);  len = s.length();
-
-    brute(0);
-
-    cout << result;
+    solve();
 
     return 0;
 }
