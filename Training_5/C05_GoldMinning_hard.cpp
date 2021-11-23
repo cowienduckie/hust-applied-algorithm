@@ -4,20 +4,14 @@
 
 using namespace std;
 
-//Global Variables
-
-
-//List of functions
-
-
-//Main
+//
 int main(int argc, char **argv){
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     //INPUT
     int num = 0, min_dist = 0, max_dist = 0, track = 0;
     cin >> num >> min_dist >> max_dist;  
 
-    ll whouse[num], gold[num], result = 0, max_prev = 0;
+    ll gold[num], result = 0, max_prev = 0;
 
     for(int i = 0; i < num; ++i){
 
@@ -59,5 +53,3 @@ int main(int argc, char **argv){
 
     return 0;
 }
-
-//Functions
