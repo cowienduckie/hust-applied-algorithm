@@ -78,5 +78,8 @@ tempCodeRunnerFile.*
 temp.*
 tmp.*
 
-# VSCode
+# VSCode files
 .vscode/
+
+# Output files
+*.out
