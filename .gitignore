@@ -77,3 +77,6 @@ Temporary Items
 tempCodeRunnerFile.*
 temp.*
 tmp.*
+
+# VSCode
+.vscode/
